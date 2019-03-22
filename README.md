@@ -74,7 +74,7 @@ The IAM handwriting dataset contains 1,539 forms written be 657 unique individua
 
 # CNN Modeling:
 ### Examining the presence of a letter or not:
-The target words were transformed into a 1d-vector that examined the presence of a letter in a word or not. If the word was present,
+The target words were transformed into a 1d-vector that examined the presence of a letter in a word or not.
 
 <p align="center">
   <img src="images/vec_words.png">
@@ -127,6 +127,7 @@ From the y_train dataset, I summed the total amount of letters across all 1600 w
   <img src="images/myletterfreq.png" width = 400>
   <img src="images/letter_freq.png" width = 400>
 </p>
+
 On the left is the frequency of letters from my y-training dataset and on the right is the letter frequencies that has been cited [here](https://en.wikipedia.org/wiki/Letter_frequency). The the two are very similar in trend, so this could allow me to use the more commonly used frequencies as weights to identify the thresholds of the individual letters for my letters. Conversely, I could just use my training corpus to identify thresholds that might be relevant for the testing data.
 <br></br>
 I decided to take the mean of each letter across all the words to use that as a threshold to examine my y_test data:<br></br>
