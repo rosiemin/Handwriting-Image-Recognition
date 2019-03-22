@@ -36,6 +36,7 @@ The goal of this capstone was to caption images of handwritten text using deep l
 - [ ] Scale model up, using words to line on portion of data
 - [ ] Run CNN-LSTM model on full dataset for words to line
 - [ ] Understanding output of model & identify thresholds or words
+- [ ] Look at using Transfer Learning to train my models
 - [ ] Attempt a working demo of the CNN-LSTM words to line model
 <br>[Return to Top](#Table-of-Contents)
 
@@ -192,5 +193,6 @@ So based on these thresholds, the actual y-test frequencies vs the y-test predic
 - [ ] Scale model up, using words to line on portion of data
 - [ ] Run CNN-LSTM model on full dataset for words to line
 - [ ] Understanding output of model & identify thresholds or words
+- [ ] Look at using Transfer Learning to train my models
 - [ ] Attempt a working demo of the CNN-LSTM words to line model
 <br>[Return to Top](#Table-of-Contents)
