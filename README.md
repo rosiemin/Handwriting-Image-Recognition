@@ -95,6 +95,7 @@ HyperParameters:
   <img src="images/cap2.gif">
 </p>
 
+Model Adapted from [@qjadud1994](https://github.com/qjadud1994/CRNN-Keras) and [@githubharald](https://github.com/githubharald/SimpleHTR_)
 
 [Return to Top](#Table-of-Contents)
 
