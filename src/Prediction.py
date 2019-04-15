@@ -47,7 +47,7 @@ for test_img in test_imgs:
 
     img_pred = img.astype(np.float32)
     img_pred = cv2.resize(img_pred, (128, 64))
-    #img_pred = (img_pred / 255.0) * 2.0 - 1.0
+    img_pred = (img_pred / 255.0) * 2.0 - 1.0
     img_pred = img_pred.T
     img_pred = np.expand_dims(img_pred, axis=-1)
     img_pred = np.expand_dims(img_pred, axis=0)
