@@ -7,13 +7,14 @@ import numpy as np
 import random
 from tqdm import tqdm
 import pdb
+import imageio
 
 class IAM_imageprocess():
     word = 'word'
     line = 'line'
     color = 255
 
-    def __init__(self, df, cutoff_height = 100, cutoff_width = 250, desired_height = 32, desired_width = 64, size = 1000, rootDir = 'data/words'):
+    def __init__(self, df, cutoff_height = 200, cutoff_width = 400, desired_height = 32, desired_width = 64, size = 2000, rootDir = 'data/words'):
         self.df = df
         self.rootDir = rootDir
         self.cutoff_height = cutoff_height
@@ -32,7 +33,6 @@ class IAM_imageprocess():
             if not os.path.isfile('data/lines_image_size_df.csv'):
                 self.max_h_w_image()
             self.subset_by_size('data/lines_image_size_df.csv')
-        self.remove_nonalpha()
         self.resize_images()
         X_train, X_test, y_train, y_test = self.train_test_split()
 
@@ -82,19 +82,6 @@ class IAM_imageprocess():
 
         return self.full_df, self.df
 
-    def remove_nonalpha(self):
-        a = len(self.df)
-        idx_lst = []
-        for idx, word in enumerate(self.df['target']):
-            if word.isalpha():
-                pass
-            else:
-                idx_lst.append(idx)
-
-        self.df = self.df.drop(idx_lst, axis = 0).reset_index(drop=True)
-        print(f"Reduced dataframe from {a} to {len(self.df)}")
-
-        return self.df
 
     def resize_images(self):
         print(f"Resizing {len(self.df)} Images...")
@@ -105,47 +92,63 @@ class IAM_imageprocess():
             self.filelist.append(self.rootDir+"/"+i)
         # parses through your file list and processes each image
         self.vect_img_lst = []
-        for id, image in zip(self.df['id'],tqdm(self.filelist)):
-            newfilepath = "data/pad_img/words/"+id+ f"-RESIZE-{self.desired_width}x{self.desired_height}.png"
+        for idx, (target, image) in enumerate(zip(self.df['target'],tqdm(self.filelist))):
+            newfilepath = "data/pad_img/words/"+f"{idx}_{target}.png"
+            self.df.loc[idx, 'new_file_path'] = newfilepath
+
             if os.path.isfile(newfilepath):
                 new_im = ImageOps.grayscale(Image.open(newfilepath))
                 self.vect_img_lst.append(np.array(new_im))
+
             else:
                 old_im = ImageOps.grayscale(Image.open(image))
-                img_width = old_im.size[0]
-                img_height = old_im.size[1]
-                if img_width < self.cutoff_width and img_width < self.desired_width:
-                    delta_w = self.desired_width - img_width
-                    pad_w = (delta_w//2, 0, delta_w-(delta_w//2), 0)
-                    old_im = ImageOps.expand(old_im, pad_w, 255)
-                if img_height < self.cutoff_height and img_height < self.desired_height:
-                    delta_h = self.desired_height - img_height
-                    pad_h = (0, delta_h//2, 0, delta_h-(delta_h//2))
-                    old_im = ImageOps.expand(old_im, pad_h, color)
-                # pad all images whether we added padding or not
+                # img_width = old_im.size[0]
+                # img_height = old_im.size[1]
+                # if img_width < self.cutoff_width and img_width < self.desired_width:
+                #     delta_w = self.desired_width - img_width
+                #     pad_w = (delta_w//2, 0, delta_w-(delta_w//2), 0)
+                #     old_im = ImageOps.expand(old_im, pad_w, 255)
+                # if img_height < self.cutoff_height and img_height < self.desired_height:
+                #     delta_h = self.desired_height - img_height
+                #     pad_h = (0, delta_h//2, 0, delta_h-(delta_h//2))
+                #     old_im = ImageOps.expand(old_im, pad_h, 255)
+                # # pad all images whether we added padding or not
                 extra_pad = (10, 10, 10, 10)
-                old_im = ImageOps.expand(old_im, extra_pad, color)
+                new_im = ImageOps.expand(old_im, extra_pad, 255)
                 #resize images to be our desired size
-                new_im = old_im.resize((self.desired_width, self.desired_height))
+                # new_im = old_im.resize((self.desired_width, self.desired_height))
                 self.vect_img_lst.append(np.array(new_im))
 
                 new_im.save(newfilepath)
 
     def train_test_split(self):
+        #self.size = len(self.df)
+
         print(f'Randomly selecting {self.size} samples...')
         print("Performing train test split")
         subsample = random.sample(range(len(self.vect_img_lst)), self.size)
         X = [self.vect_img_lst[i] for i in subsample]
-        y = self.df[['id','target']].values[subsample]
+        y = self.df[['id','target','new_file_path']].values[subsample]
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 42)
+        for idx, (img, target) in enumerate(zip(tqdm(X_train), y_train)):
+            filepath = target[2]
+            newpath = filepath.replace("words", "train")
+
+            imageio.imwrite(newpath, img)
+
+        for idx, (img, target) in enumerate(zip(tqdm(X_test), y_test)):
+            filepath = target[2]
+            newpath = filepath.replace("words", "test")
+
+            imageio.imwrite(newpath, img)
 
         return X_train, X_test, y_train, y_test
 
 if __name__ == '__main__':
 
     words = IAMLoadData('data/words.txt')
-    df = words.load_data()
+    df = words.df
 
     clean = IAM_imageprocess(df)
 
