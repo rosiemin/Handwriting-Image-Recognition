@@ -37,7 +37,7 @@ model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer=ada, metric
 H = model.fit_generator(generator=words_train.next_batch(),
                     steps_per_epoch=1000,
                     epochs=1000,
-                    callbacks=[checkpoint],
+                    # callbacks=[checkpoint],
                     validation_data=words_val.next_batch(),
                     validation_steps=1000,
                     verbose = 1)

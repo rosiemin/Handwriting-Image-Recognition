@@ -42,7 +42,7 @@ acc = 0
 letter_total = 0
 letter_acc = 0
 start = time.time()
-for test_img in test_imgs:
+for test_img in tqdm(test_imgs):
     img = cv2.imread(test_dir + test_img, cv2.IMREAD_GRAYSCALE)
 
     img_pred = img.astype(np.float32)
