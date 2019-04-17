@@ -5,13 +5,11 @@ import json
 import yaml
 from nltk.metrics.distance import edit_distance
 import numpy as np
-
-from data_generators.data_generator_seq2seq import DataGenerator
-from models.model_seq2seq import ModelSeq2Seq
-from trainers.trainer_seq2seq import TrainerSeq2Seq
-from predictors.predictor_seq2seq import PredictorSeq2Seq
-# from util import score_prediction
-from preprocessing.preproc_functions import read_image_BW, normalize_0_mean_1_variance_BW
+from src.data_generator_seq2seq import DataGenerator
+from src.model_seq2seq import ModelSeq2Seq
+from src.trainer_seq2seq import TrainerSeq2Seq
+from src.predictor_seq2seq import PredictorSeq2Seq
+from src.preproc_functions import read_image_BW, normalize_0_mean_1_variance_BW
 
 
 def train(args):
@@ -52,7 +50,8 @@ def train(args):
     train_model = ModelSeq2Seq(config, max_seq_length, num_decoder_tokens)
     trainer = TrainerSeq2Seq(config, train_model, train_generator, val_generator)
 
-    trainer.train()
+    H = trainer.train()
+    return H
 
 def score_prediction(y_true, y_pred):
     """Function to score prediction on IAM, using Levenshtein distance
@@ -76,28 +75,10 @@ def score_prediction(y_true, y_pred):
     words_identified = 0
     characters_identified = 0
     char_tot = 0
-#    CER = 0
-
-#    list_accuracy_characters = []
 
     for i in range(len(y_pred)):
-        #pred_row = [y_true[i], y_pred[i]]
-
-        #check if date are the same
-        #if pred_row[0] == pred_row[1]:
         if y_true[i] == y_pred[i]:
-
             words_identified += 1
-
-#        if len(pred_row[1]) < len(pred_row[0]):
-#            pred_row[1] += '-' * (len(pred_row[0]) - len(pred_row[1]))
-#        elif len(pred_row[1]) > len(pred_row[1]):
-
-#            pred_row[1] = pred_row[1][0:len(pred_row[0])]
-
-        #check the number of characters that are the same
- #       print(y_true[i])
- #       print(y_pred[i])
 
         levenshtein_distance = edit_distance(y_true[i], y_pred[i])
         n_char = np.maximum(len(y_true[i]), len(y_pred[i]))
@@ -105,16 +86,6 @@ def score_prediction(y_true, y_pred):
         normalized_distance = levenshtein_distance/n_char
 
         characters_identified += normalized_distance
-#        char_tot += n_char
-
-#        CER += normalized_distance
-
-#        print(len(y_true[i]))
-#        for k in range(len(y_true[i])):
-#            print()
-#            if y_true[i][k] == y_pred[1][k]:
-#        characters_identified += 1
-#        char_tot += 1
 
     # array_accuracy_characters = np.asarray(list_accuracy_characters)
     CER = float((characters_identified) / len(y_true))
@@ -154,14 +125,14 @@ def predict_on_test(args):
 
     CER, WER  = score_prediction(labels_test, pred_test)
 
-   for i in range(len(labels_test)):
-       print(labels_test[i], pred_test[i])
+    for i in range(len(labels_test)):
+        print(labels_test[i], pred_test[i])
 
     print('CER: ', round(CER * 100, 2), '%')
     print('WER: ', round(WER * 100, 2), '%')
 
 
-def predict(args):
+def predict(args, filename):
     """
     Predict on a single image
     """
@@ -204,26 +175,13 @@ def predict(args):
 
     pred = predictor.predict(image)
     print(pred)
-    print("Actual Label:", )
     print("Predicted label:", pred[0])
-
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='Seq2seq')
-    parser.add_argument('-c', '--conf', help='path to configuration file', required=True)
+    # parser = argparse.ArgumentParser(description='Seq2seq')
+    # parser.add_argument('-c', '--conf', help='path to configuration file', required=True)
 
-#    subparsers = parser.add_subparsers(help='Arguments for specific dataset types.', dest='dataset_type')
-#    subparsers.required = True
-
-#    predict_parser = subparsers.add_parser('--predict')
-#    predict_parser.add_argument('--filename', help='')
-
-#    pascal_parser = subparsers.add_parser('pascal')
-#    pascal_parser.add_argument('pascal_path', help='Path to dataset directory (ie. /tmp/VOCdevkit).')
-
-#    argparser.add_argument('--predict-on-test', action='store_true', help='predict mode')
- #   parser = argparse.ArgumentParser(description='Arg parser')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--train', action='store_true', help='Train')
@@ -245,7 +203,7 @@ if __name__ == '__main__':
             raise Exception('missing --filename FILENAME')
         else:
             print('predict')
-        predict(args)
+            predict(args)
 
     elif args.train:
         print('Starting training')

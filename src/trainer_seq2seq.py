@@ -15,7 +15,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceL
 #import keras.backend as K
 #from keras.optimizers import Adam
 
-from base.base_trainer import BaseTrain
+from src.base_trainer import BaseTrain
 
 
 class TrainerSeq2Seq(BaseTrain):
@@ -38,8 +38,8 @@ class TrainerSeq2Seq(BaseTrain):
     save_model()
         save model weights
     """
-    
-    
+
+
     def __init__(self, config, model, train_generator, val_generator):
         """
         Constructor
@@ -62,31 +62,31 @@ class TrainerSeq2Seq(BaseTrain):
         callbacks : list
             callback list
         """
-        
+
         callbacks = []
 
         #early stopping
         if self.config['callbacks']['early_stopping']['enabled'] == True:
             monitor = self.config['callbacks']['early_stopping']['monitor']
-            patience = self.config['callbacks']['early_stopping']['patience']        
+            patience = self.config['callbacks']['early_stopping']['patience']
             callbacks.append(EarlyStopping(monitor=monitor, min_delta=0, patience=patience, verbose=1, mode='auto'))
 
         #tensorboard
         if self.config['callbacks']['tensorboard']['enabled'] == True:
             log_dir = self.config['callbacks']['tensorboard']['log_dir']
             callbacks.append(TensorBoard(log_dir=log_dir))
-            
+
         #best checkpoint
         if self.config['callbacks']['model_best_checkpoint']['enabled'] == True:
             monitor = self.config['callbacks']['model_best_checkpoint']['monitor']
             filepath = self.config['callbacks']['model_best_checkpoint']['out_file']
-            callbacks.append(ModelCheckpoint(filepath, monitor=monitor, verbose=1, save_best_only=True, 
+            callbacks.append(ModelCheckpoint(filepath, monitor=monitor, verbose=1, save_best_only=True,
                                              save_weights_only=True, mode='min'))
 
         #last checkpoint
         if self.config['callbacks']['model_last_checkpoint']['enabled'] == True:
             filepath = self.config['callbacks']['model_last_checkpoint']['out_file']
-            callbacks.append(ModelCheckpoint(filepath, verbose=1, save_best_only=False, 
+            callbacks.append(ModelCheckpoint(filepath, verbose=1, save_best_only=False,
                             save_weights_only=True))
 
         #reduce lr on plateau
@@ -95,10 +95,10 @@ class TrainerSeq2Seq(BaseTrain):
             factor = self.config['callbacks']['reduce_lr_on_plateau']['factor']
             patience = self.config['callbacks']['reduce_lr_on_plateau']['patience']
             callbacks.append(ReduceLROnPlateau(monitor = monitor, factor = factor, patience = patience))
-            
+
         return callbacks
 
-                             
+
     def train(self):
         """
         Train a model
@@ -107,29 +107,30 @@ class TrainerSeq2Seq(BaseTrain):
         #initialize weights
         if self.config['train']['weights_initialization']['use_pretrained_weights'] == True:
             snapshot_file = self.config['train']['weights_initialization']['restore_from']
-            
+
             print('Restoring weights from', snapshot_file)
             self.model.load_weights(snapshot_file)
-        
-        #fit 
+
+        #fit
         use_multiprocessing = self.config['train']['use_multiprocessing']
         num_workers = self.config['train']['num_workers']
-        
-        self.model.fit_generator(generator=self.train_generator, validation_data=self.val_generator, 
+
+        H = self.model.fit_generator(generator=self.train_generator, validation_data=self.val_generator,
                                  epochs=self.epochs, verbose=1, max_queue_size=10, workers=num_workers,
-                                 use_multiprocessing=use_multiprocessing, shuffle=False, 
+                                 use_multiprocessing=use_multiprocessing, shuffle=False,
                                  callbacks=self.callbacks_list)
-        
+
         #save graph and weights
         graph_path = self.config['train']['output']['output_graph']
         weights_path = self.config['train']['output']['output_weights']
 
         print("Saving graph and weights in", graph_path, ",", weights_path)
         self.save_model(self.model, graph_path, weights_path)
-        
-        
+
+        return H
+
     def save_model(self, model, graph_path, weights_path):
-        """Function to save a model graph and weights 
+        """Function to save a model graph and weights
 
         Parameters
         ------
@@ -140,14 +141,14 @@ class TrainerSeq2Seq(BaseTrain):
         weights_path : keras.models
             path to save weights
         """
-                   
+
         model_json = model.to_json()
         with open(graph_path, "w") as json_file:
             json_file.write(model_json)
-            
+
         model.save_weights(weights_path)
- 
-    
+
+
 #        history = self.model.fit(
 #            self.data[0], self.data[1],
 #            epochs=self.config.trainer.num_epochs,

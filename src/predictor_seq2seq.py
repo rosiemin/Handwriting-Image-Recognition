@@ -15,9 +15,9 @@ from keras.callbacks import EarlyStopping
 #import keras.backend as K
 from keras.optimizers import Adam
 from keras.models import model_from_json
-from preprocessing.preproc_functions import read_image_BW, normalize_0_mean_1_variance_BW
+from src.preproc_functions import read_image_BW, normalize_0_mean_1_variance_BW
 
-from base.base_predictor import BasePredictor
+from src.base_predictor import BasePredictor
 
 class PredictorSeq2Seq(BasePredictor):
     """
@@ -26,19 +26,19 @@ class PredictorSeq2Seq(BasePredictor):
     Attributes
     ----------
     num_decoder_tokens : int
-        configuration file 
+        configuration file
     max_seq_length : int
-        configuration file 
+        configuration file
     token_indices : dict
-        dict {token: index} 
+        dict {token: index}
     reverse_token_indices : dict
-        dict {index: token} 
+        dict {index: token}
     batch_size : int
         batch size for prediction
     model : keras.models
-        keras model 
+        keras model
     encoder_graph : keras.models
-        encoder graph of the keras model 
+        encoder graph of the keras model
     decoder_graph : keras.models
         decoder graph of the keras model
 
@@ -46,15 +46,15 @@ class PredictorSeq2Seq(BasePredictor):
     -------
     load_model(graph_path, weights_path)
         load a keras model from graph and weights
-    build_graphs()   
+    build_graphs()
         create the computational graphs (encoder, decoder)
     predict(images)
         predict labels given an array of images
-    decode_sequence(input_seq, batch_dim, num_decoder_tokens, max_decoder_seq_length, 
-                    token_indices, reverse_token_indices)    
+    decode_sequence(input_seq, batch_dim, num_decoder_tokens, max_decoder_seq_length,
+                    token_indices, reverse_token_indices)
         decode a sequence after encoding
     """
-    
+
     def __init__(self, config, graph_path, weights_path, num_decoder_tokens, max_seq_length,
                 token_indices, reverse_token_indices, batch_size = 64):
         """
@@ -68,7 +68,7 @@ class PredictorSeq2Seq(BasePredictor):
         self.batch_size = batch_size
         self.model = self.load_model(graph_path, weights_path)
         self.encoder_graph, self.decoder_graph = self.build_graphs()
-    
+
  #       self.callbacks_list = self.callbacks()
  #       self.loss = []
  #       self.acc = []
@@ -85,13 +85,13 @@ class PredictorSeq2Seq(BasePredictor):
             path to the graph
         weights_path: str
             path to the weights
-            
+
         Returns
         -------
         model: keras.models
             keras model
         """
-        
+
         json_file = open(graph_path, 'r')
         loaded_model_json = json_file.read()
         json_file.close()
@@ -99,24 +99,24 @@ class PredictorSeq2Seq(BasePredictor):
         model = model_from_json(loaded_model_json)
         # load weights into new model
         model.load_weights(weights_path)
-        
+
         return model
-    
-    def build_graphs(self):     
+
+    def build_graphs(self):
         """Create the computational graphs (encoder, decoder)
-            
+
         Returns
         -------
         encoder_graph: keras.models
-            keras model of the encoder            
+            keras model of the encoder
         decoder_graph: keras.models
             keras model of the encoder
         """
 
         latent_dim = self.config['network']['latent_dim']
-        
-        # Define inference models 
-        
+
+        # Define inference models
+
         #encoder
         #encoder_inputs_inference = Input(shape=(x_size, y_size, 1), name='input_encoder_inference')
         encoder_graph = Model(self.model.get_input_at(0)[0], self.model.get_layer("lstm_encoder").output[1:])
@@ -138,25 +138,25 @@ class PredictorSeq2Seq(BasePredictor):
 
         decoder_output = decoder_dense_layer(decoder_output)
         decoder_graph = Model([decoder_input] + decoder_states_input, [decoder_output] + decoder_states)
-        
+
         return encoder_graph, decoder_graph
-    
+
     def predict(self, images):
         """Predict labels given an array of images
-        
+
         Parameters
         ------
         images: numpy array
             images array
-            
+
         Returns
         -------
         flattened_list: list
             list with predicted labels
-        """ 
-    
+        """
+
         batch_size = self.batch_size
-        
+
         n_images = images.shape[0]
         y_size = images.shape[1]
         x_size = images.shape[2]
@@ -175,7 +175,7 @@ class PredictorSeq2Seq(BasePredictor):
 
             input_seq = images[batch_in:batch_out, :, :, :]
             batch_dim = batch_out - batch_in
-            decoded_sentences = self.decode_sequence(input_seq, batch_dim, self.num_decoder_tokens, 
+            decoded_sentences = self.decode_sequence(input_seq, batch_dim, self.num_decoder_tokens,
                                               self.max_seq_length,
                                               self.token_indices,
                                               self.reverse_token_indices)
@@ -186,31 +186,31 @@ class PredictorSeq2Seq(BasePredictor):
         flattened_list = [item for sublist in output_list for item in sublist]
 
         return flattened_list
-    
+
     def decode_sequence(self, input_seq, batch_dim, num_decoder_tokens, max_seq_length, token_indices, reverse_token_indices):
         """Decode a batch of images
-        
+
         Parameters
         ------
         input_seq: numpy array
             batch of images
         batch_dim: int
-            dimension of batch in prediction        
+            dimension of batch in prediction
         num_decoder_tokens: int
             total number of tokens
         max_seq_length: int
-            max length of sequences                      
+            max length of sequences
         token_indices: dict
-            dict {token: index}            
+            dict {token: index}
         reverse_token_indices: dict
             dict {index: token}
-            
+
         Returns
         -------
         decoded_sentences: list
             list with predicted of the batch
-        """ 
-            
+        """
+
         # Encode the input as state vectors.
         states_value = self.encoder_graph.predict(input_seq, batch_size = batch_dim)
 
@@ -221,14 +221,14 @@ class PredictorSeq2Seq(BasePredictor):
         target_seq[:, token_indices['[']] = 1.
 
         for i in range(max_seq_length):
-            output_tokens, h, c = self.decoder_graph.predict([np.expand_dims(target_seq, axis=1)] + states_value, 
+            output_tokens, h, c = self.decoder_graph.predict([np.expand_dims(target_seq, axis=1)] + states_value,
                                                             batch_size = batch_dim )
 
             # Sample a token
             sampled_token_index = np.argmax(output_tokens[:, -1, :], axis=1)
             #        confidence.append(np.max(output_tokens[:, -1, :]))
 
-            target_seq = np.zeros((batch_dim, num_decoder_tokens))    
+            target_seq = np.zeros((batch_dim, num_decoder_tokens))
             for j in range(batch_dim):
                 target_seq[j, sampled_token_index[j]] = 1.
 
@@ -244,14 +244,14 @@ class PredictorSeq2Seq(BasePredictor):
         for i in range(batch_dim):
             sentence = []
             for j in range(full_seq.shape[1]):
-                sampled_token_index = np.argmax(full_seq[i, j, :])   
-                
+                sampled_token_index = np.argmax(full_seq[i, j, :])
+
                 decoded_elem = reverse_token_indices[sampled_token_index]
                 if decoded_elem == ']':
                     break
                 else:
                     sentence.append(reverse_token_indices[sampled_token_index])
-                
-            decoded_sentences.append(''.join(sentence))  
+
+            decoded_sentences.append(''.join(sentence))
 
         return decoded_sentences

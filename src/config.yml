@@ -1,6 +1,6 @@
 ---
-images_folder: "datasets/words/"
-labels_file: "datasets/labels.json"
+images_folder: "data/words/"
+labels_file: "data/labels.json"
 image:
     image_size:
         y_size: 128
@@ -57,8 +57,8 @@ callbacks:
         enabled: true
         out_file: "experiments/snapshot_last.h5"
     tensorboard:
-        enabled: false
-        log_dir: "tensorboard/"
+        enabled: true
+        log_dir: "experiments/"
     reduce_lr_on_plateau:
         enabled: false
         monitor: "val_loss"

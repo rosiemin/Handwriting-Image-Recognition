@@ -15,7 +15,7 @@ from keras.layers import Input, LSTM, Dense, Conv2D, MaxPooling2D, Reshape, Drop
 #import keras.backend as K
 from keras.optimizers import Adam
 
-from base.base_model import BaseModel
+from src.base_model import BaseModel
 
 class ModelSeq2Seq(BaseModel):
     """
@@ -24,8 +24,8 @@ class ModelSeq2Seq(BaseModel):
     Attributes
     ----------
     y_size : int
-        image height 
-    x_size : int 
+        image height
+    x_size : int
         image width
     num_channels : int
         number of channels
@@ -45,7 +45,7 @@ class ModelSeq2Seq(BaseModel):
     save_graph()
         save the computational graph
     """
-    
+
     def __init__(self, config, max_seq_length, num_decoder_tokens):
         """
         Constructor
@@ -69,12 +69,12 @@ class ModelSeq2Seq(BaseModel):
         model: keras.models
             compiled keras model
         """
-        
-        model = self.build_graph()        
+
+        model = self.build_graph()
         model.compile(optimizer = self.optimizer, loss = self.loss)
 
         return model
-        
+
     def build_graph(self):
         """Create the computational graph
 
@@ -83,17 +83,17 @@ class ModelSeq2Seq(BaseModel):
         model: keras.models
             keras model
         """
-        
+
         ## Define an input sequence and process it.
         encoder_input = Input(shape=(self.y_size, self.x_size, self.num_channels), name='input_encoder')
-        
+
         assert len(self.config['network']['num_filters']) == len(self.config['network']['conv_kernels'])
-        
+
         encoder_graph = encoder_input
 
         #----------------convolutional network-----------------------
         for i in range(len(self.config['network']['num_filters'])):
-            
+
             encoder_graph = Conv2D(self.config['network']['num_filters'][i], self.config['network']['conv_kernels'][i], padding='same', use_bias=False, name='conv_' + str(i+1))(encoder_graph)
             if self.config['network']['use_batch_norm'] == True:
                 encoder_graph = BatchNormalization(name='batch_norm_' + str(i+1))(encoder_graph)
@@ -124,13 +124,13 @@ class ModelSeq2Seq(BaseModel):
 
         model = Model([encoder_input, decoder_input], decoder_output)
         model.summary()
-        
+
         #model.load_weights('./snapshots/snapshot_last.h5')
-        
+
         return model
-    
+
     def save_graph(self, model, graph_path):
-        """Save computational graph 
+        """Save computational graph
 
         Parameters
         ------
@@ -139,7 +139,7 @@ class ModelSeq2Seq(BaseModel):
         graph_path: str
             path to save graph
         """
-        
+
         model_json = model.to_json()
         with open(graph_path, "w") as json_file:
             json_file.write(model_json)
