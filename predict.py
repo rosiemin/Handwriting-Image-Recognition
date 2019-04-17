@@ -95,4 +95,4 @@ def predict_on_test(args):
 
 if __name__ == '__main__':
     print('Predicting on test set')
-    CER, WER, labels_test, pred_test, images_test = predict_on_test('src/config.yml')
+    CER, WER, labels_test, pred_test, images_test, dataset['test'] = predict_on_test('src/config.yml')
