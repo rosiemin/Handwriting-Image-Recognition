@@ -93,4 +93,4 @@ def predict_on_test(args):
 
 if __name__ == '__main__':
     print('Predicting on test set')
-    predict_on_test('configs/config.yml')
+    predict_on_test('src/config.yml')

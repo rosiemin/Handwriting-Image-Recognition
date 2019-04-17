@@ -203,6 +203,7 @@ class DataGenerator(BaseDataGenerator):
         target_token_index = dict((k, v) for v, k in enumerate(self.decoder_tokens))
         reverse_target_token_index = dict((i, char) for char, i in target_token_index.items())
         print(self.decoder_tokens)
+        print(len(self.decoder_tokens))
         return target_token_index, reverse_target_token_index
 
     def one_hot_labels(self, label, max_seq_length, num_decoder_tokens, target_token_index):

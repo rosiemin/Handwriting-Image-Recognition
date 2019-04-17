@@ -58,7 +58,7 @@ def train(args):
 if __name__ == '__main__':
 
     print('Starting training')
-    H = train('configs/config.yml')
+    H = train('src/config.yml')
 
     plt.plot(range(len(H.history['loss'])), H.history['loss'], label = 'Training Loss')
     plt.plot(range(len(H.history['val_loss'])), H.history['val_loss'], label = 'Validation Loss')
