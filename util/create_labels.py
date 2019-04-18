@@ -66,7 +66,7 @@ def create_labels(data_folder, test_size, val_size, random_state):
 
 if __name__ == '__main__':
 
-    data_folder = '../datasets/'
+    data_folder = 'data/'
     filename_out = 'labels.json'
     
     test_size = 0.1 
