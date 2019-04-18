@@ -12,7 +12,7 @@ def data_aug_functions(img, config):
     ------
     config: dict
         configuration file
-        
+
     Returns
     -------
     img: numpy array
@@ -20,11 +20,11 @@ def data_aug_functions(img, config):
     """
 
     #print('data aug')
-    
+
     y_size = config['image']['image_size']['y_size']
     x_size = config['image']['image_size']['x_size']
-    num_channels = config['image']['image_size']['num_channels'] 
-    
+    num_channels = config['image']['image_size']['num_channels']
+
     rotation_range = config['data_aug']['rotation_range']
     width_shift_range = config['data_aug']['width_shift_range']
     height_shift_range = config['data_aug']['height_shift_range']
@@ -44,7 +44,7 @@ def data_aug_functions(img, config):
     return img_aug
 
 def flip(img, horizontal_flip, vertical_flip, y_size, x_size, num_channels):
-    """Function to flip images horizontally and vertically with prob = 0.5 
+    """Function to flip images horizontally and vertically with prob = 0.5
 
     Parameters
     ------
@@ -60,7 +60,7 @@ def flip(img, horizontal_flip, vertical_flip, y_size, x_size, num_channels):
         image width
     num_channels: int
         number of channels
-        
+
     Returns
     -------
     img: numpy array
@@ -97,7 +97,7 @@ def translation(img, width_shift_range, height_shift_range, y_size, x_size, num_
         image width
     num_channels: int
         number of channels
-        
+
     Returns
     -------
     img: numpy array
@@ -128,13 +128,13 @@ def rotation(img, rotation_range, y_size, x_size, num_channels):
         image width
     num_channels: int
         number of channels
-        
+
     Returns
     -------
     img: numpy array
         rotated image
     """
-    
+
     angle = np.random.uniform(-rotation_range, rotation_range)
 
     M = cv2.getRotationMatrix2D((x_size/2, y_size/2), angle, 1)
@@ -161,25 +161,25 @@ def zoom(img, zoom_range, y_size, x_size, num_channels):
         image width
     num_channels: int
         number of channels
-        
+
     Returns
     -------
     img: numpy array
         zoomed image
     """
-    
-    zoom = np.random.uniform(zoom_range[0], zoom_range[1]) 
 
-    p1 = [5, 5] 
+    zoom = np.random.uniform(zoom_range[0], zoom_range[1])
+
+    p1 = [5, 5]
     p2 = [20, 5]
     p3 = [5, 20]
 
     pts1 = np.float32([p1, p2, p3])
-    pts2 = np.float32([[x * zoom for x in p1], 
-                       [x * zoom for x in p2], 
+    pts2 = np.float32([[x * zoom for x in p1],
+                       [x * zoom for x in p2],
                        [x * zoom for x in p3] ])
 
-    M = cv2.getAffineTransform(pts1,pts2) 
+    M = cv2.getAffineTransform(pts1,pts2)
     zoomed_image = cv2.warpAffine(img,M,(x_size, y_size))
 
     return zoomed_image
@@ -199,19 +199,19 @@ def shear(img, shear_range, y_size, x_size, num_channels):
         image width
     num_channels: int
         number of channels
-        
+
     Returns
     -------
     img: numpy array
         sheared image
     """
-    
+
     pts1 = np.float32([[5,5],[20,5],[5,20]])
     pt1 = 5 + shear_range*np.random.uniform() - shear_range/2
     pt2 = 20 + shear_range*np.random.uniform() - shear_range/2
     pts2 = np.float32([[pt1,5],[pt2,pt1],[5,pt2]])
 
-    M = cv2.getAffineTransform(pts1, pts2) 
+    M = cv2.getAffineTransform(pts1, pts2)
     sheared_range = cv2.warpAffine(img, M, (x_size, y_size))
 
     return sheared_range

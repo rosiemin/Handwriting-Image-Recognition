@@ -15,9 +15,9 @@ from keras.layers import Input, LSTM, Dense, Conv2D, MaxPooling2D, Reshape, Drop
 #import keras.backend as K
 from keras.optimizers import Adam
 
-from src.base_model import BaseModel
+# from src.base_model import BaseModel
 
-class ModelSeq2Seq(BaseModel):
+class ModelSeq2Seq():
     """
     Class for the keras model
 
@@ -50,16 +50,48 @@ class ModelSeq2Seq(BaseModel):
         """
         Constructor
         """
-        super().__init__(config)
+        self.config = config
+        self.model = None
+        self.loss = config['network']['loss']
+        self.optimizer = self.set_optimizer(self.config['train']['optimizer'], self.config['train']['learning_rate'])
         self.y_size = config['image']['image_size']['y_size']
         self.x_size = config['image']['image_size']['x_size']
         self.num_channels = config['image']['image_size']['num_channels']
-
         self.latent_dim = config['network']['latent_dim']  # Latent dimensionality of the encoding space.
         self.max_seq_length = max_seq_length
         self.num_decoder_tokens = num_decoder_tokens
 
         self.model = self.build_model()
+
+    def set_optimizer(self, optimizer_name, lr):
+        """Select the optimizer
+
+        Parameters
+        ------
+        optimizer_name:
+            name of the optimizer, either adam, sgd, rmsprop, adagrad, adadelta
+        lr: fload
+            learning rate
+
+        Raises
+        ------
+        Exception
+        """
+
+        if optimizer_name == 'adam':
+            optimizer = Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+        elif optimizer_name == 'sgd':
+            optimizer = SGD(lr=lr, momentum=0.0, decay=0.0, nesterov=False)
+        elif optimizer_name == 'rmsprop':
+            optimizer = RMSprop(lr=lr, rho=0.9, epsilon=None, decay=0.0)
+        elif optimizer_name == 'adagrad':
+            optimizer = Adagrad(lr=lr, epsilon=None, decay=0.0)
+        elif optimizer_name == 'adadelta':
+            optimizer = Adadelta(lr=lr, rho=0.95, epsilon=None, decay=0.0)
+        else:
+            raise Exception('Optimizer unknown')
+
+        return optimizer
 
     def build_model(self):
         """Create the keras model

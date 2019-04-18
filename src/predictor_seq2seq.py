@@ -22,7 +22,6 @@ from src.base_predictor import BasePredictor
 class PredictorSeq2Seq(BasePredictor):
     """
     Class for prediction
-
     Attributes
     ----------
     num_decoder_tokens : int
@@ -41,7 +40,6 @@ class PredictorSeq2Seq(BasePredictor):
         encoder graph of the keras model
     decoder_graph : keras.models
         decoder graph of the keras model
-
     Methods
     -------
     load_model(graph_path, weights_path)
@@ -78,14 +76,12 @@ class PredictorSeq2Seq(BasePredictor):
 
     def load_model(self, graph_path, weights_path):
         """Load a keras model from graph and weights
-
         Parameters
         ------
         graph_path: srt
             path to the graph
         weights_path: str
             path to the weights
-
         Returns
         -------
         model: keras.models
@@ -104,7 +100,6 @@ class PredictorSeq2Seq(BasePredictor):
 
     def build_graphs(self):
         """Create the computational graphs (encoder, decoder)
-
         Returns
         -------
         encoder_graph: keras.models
@@ -143,12 +138,10 @@ class PredictorSeq2Seq(BasePredictor):
 
     def predict(self, images):
         """Predict labels given an array of images
-
         Parameters
         ------
         images: numpy array
             images array
-
         Returns
         -------
         flattened_list: list
@@ -189,7 +182,6 @@ class PredictorSeq2Seq(BasePredictor):
 
     def decode_sequence(self, input_seq, batch_dim, num_decoder_tokens, max_seq_length, token_indices, reverse_token_indices):
         """Decode a batch of images
-
         Parameters
         ------
         input_seq: numpy array
@@ -204,7 +196,6 @@ class PredictorSeq2Seq(BasePredictor):
             dict {token: index}
         reverse_token_indices: dict
             dict {index: token}
-
         Returns
         -------
         decoded_sentences: list
