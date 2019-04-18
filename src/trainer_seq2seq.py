@@ -21,14 +21,12 @@ from src.base_trainer import BaseTrain
 class TrainerSeq2Seq(BaseTrain):
     """
     Base class for the keras "model"
-
     Attributes
     ----------
     epochs : int
         number of epochs to train
     callbacks_list : list
         list with callbacks during training
-
     Methods
     -------
     callbacks()
@@ -56,7 +54,6 @@ class TrainerSeq2Seq(BaseTrain):
 
     def callbacks(self):
         """Create the callback list
-
         Returns
         -------
         callbacks : list
@@ -131,7 +128,6 @@ class TrainerSeq2Seq(BaseTrain):
 
     def save_model(self, model, graph_path, weights_path):
         """Function to save a model graph and weights
-
         Parameters
         ------
         model : keras.models
@@ -147,17 +143,3 @@ class TrainerSeq2Seq(BaseTrain):
             json_file.write(model_json)
 
         model.save_weights(weights_path)
-
-
-#        history = self.model.fit(
-#            self.data[0], self.data[1],
-#            epochs=self.config.trainer.num_epochs,
-#            verbose=self.config.trainer.verbose_training,
-#            batch_size=self.config.trainer.batch_size,
-#            validation_split=self.config.trainer.validation_split,
-#            callbacks=self.callbacks,
-#        )
-#        self.loss.extend(history.history['loss'])
-#        self.acc.extend(history.history['acc'])
-#        self.val_loss.extend(history.history['val_loss'])
-#        self.val_acc.extend(history.history['val_acc'])

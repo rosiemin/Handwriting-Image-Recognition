@@ -7,8 +7,8 @@ class BaseDataGenerator(keras.utils.Sequence):
     Attributes
     ----------
     config : dict
-        configuration file 
-    dataset : list 
+        configuration file
+    dataset : list
         dataset list, each elemen is a dictionary {'filename':, 'label'}
     dataset_len : int
         number of elements in dataset
@@ -28,15 +28,15 @@ class BaseDataGenerator(keras.utils.Sequence):
     Methods
     -------
     __len__()
-        returns the length of the dataset 
+        returns the length of the dataset
     __getitem__(index)
         returns a batch of data
     on_epoch_end()
         function called when finishing an epoch
-    data_generation(dataset_temp)     
-        read and normalize images of the batch 
+    data_generation(dataset_temp)
+        read and normalize images of the batch
     """
-    
+
     def __init__(self, config, dataset, shuffle, use_data_augmentation):
         """
         Base constructor
@@ -51,10 +51,10 @@ class BaseDataGenerator(keras.utils.Sequence):
         self.num_channels = self.config['image']['image_size']['num_channels']
         self.shuffle = shuffle
         self.use_data_aug = use_data_augmentation
-        
+
     def __len__(self):
         """Gives the number of batches per epoch
-        
+
         Raises
         ------
         NotImplementedError
@@ -68,7 +68,7 @@ class BaseDataGenerator(keras.utils.Sequence):
         ------
         index: int
             index of the batch
-            
+
         Raises
         ------
         NotImplementedError
@@ -84,16 +84,6 @@ class BaseDataGenerator(keras.utils.Sequence):
         """
         raise NotImplementedError
 
-    def data_generation(self, dataset_temp):      
-        """Read and normalize images of the batch 
+    def data_generation(self, dataset_temp):
 
-        Parameters
-        ------
-        dataset_temp: list
-            list of IDs of the elements in the batch
-            
-        Raises
-        ------
-        NotImplementedError
-        """
         raise NotImplementedError

@@ -8,13 +8,12 @@ import string
 
 from src.base_data_generator import BaseDataGenerator
 from src.data_augmentation import data_aug_functions
-from src.preproc_functions import read_image_BW, read_image_color, normalize_0_mean_1_variance_BW, normalize_0_mean_1_variance_color
+from src.preproc_functions import read_image_BW, normalize_0_mean_1_variance_BW
 
 
 class DataGenerator(BaseDataGenerator):
     """
     Class that implement data generation
-
     Attributes
     ----------
     decoder_tokens : list
@@ -29,7 +28,6 @@ class DataGenerator(BaseDataGenerator):
         {index: token}
     indices : np.arrray
         indices of the array
-
     Methods
     -------
     __len__()
@@ -56,7 +54,6 @@ class DataGenerator(BaseDataGenerator):
 
     def __len__(self):
         """Gives the number of batches per epoch
-
         Returns
         -------
         len: int
@@ -67,12 +64,10 @@ class DataGenerator(BaseDataGenerator):
 
     def __getitem__(self, index):
         """Returns a batch of data
-
         Parameters
         ------
         index: int
             index of the batch
-
         Returns
         -------
         X, y1, y2: numpy array
@@ -102,7 +97,6 @@ class DataGenerator(BaseDataGenerator):
     def get_full_dataset(self):
         """
         Returns the dataset preprocessed and the labels
-
         Returns
         -------
         dataset_images, dataset_labels: numpy array
@@ -140,12 +134,10 @@ class DataGenerator(BaseDataGenerator):
 
     def data_generation(self, dataset_temp):
         """Read and normalize images of the batch
-
         Parameters
         ------
         dataset_temp: list
             list of IDs of the elements in the batch
-
         Returns
         -------
         batch_x, batch_y1, batch_y2: numpy array
@@ -193,7 +185,6 @@ class DataGenerator(BaseDataGenerator):
     def token_indices(self):
         """
         Generate dictionaries {token: index} and {index: token}
-
         Returns
         -------
         target_token_index, reverse_target_token_index: dict
@@ -202,13 +193,11 @@ class DataGenerator(BaseDataGenerator):
 
         target_token_index = dict((k, v) for v, k in enumerate(self.decoder_tokens))
         reverse_target_token_index = dict((i, char) for char, i in target_token_index.items())
-        print(self.decoder_tokens)
-        print(len(self.decoder_tokens))
+
         return target_token_index, reverse_target_token_index
 
     def one_hot_labels(self, label, max_seq_length, num_decoder_tokens, target_token_index):
         """Convert labels in matrices [seq_length, num_tokens] in which "num_tokens" axis is one-hot
-
         Parameters
         ------
         label: str
@@ -219,7 +208,6 @@ class DataGenerator(BaseDataGenerator):
             total number of tokens
         target_token_index: dict
             dictionary {token: index}
-
         Returns
         -------
         decoder_input_data, decoder_target_data : numpy arrays

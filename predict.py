@@ -66,7 +66,7 @@ def predict_on_test(args):
     with open(config['labels_file']) as f:
         dataset = json.load(f)
 
-    test_generator = DataGenerator(config, dataset['test'], shuffle=False, use_data_augmentation=False)
+    test_generator = DataGenerator(config, dataset['test'], shuffle=False)#, use_data_augmentation=False)
 
     #numpy array containing images
     images_test, labels_test = test_generator.get_full_dataset()
