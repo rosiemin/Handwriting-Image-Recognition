@@ -132,78 +132,19 @@ def predict_on_test(args):
     print('WER: ', round(WER * 100, 2), '%')
 
 
-def predict(args, filename):
-    """
-    Predict on a single image
-    """
-
-    config_path = args.conf
-
-    filename = args.filename
-
-    with open(config_path) as f:
-        config = yaml.load(f)
-
-    with open(config['labels_file']) as f:
-        dataset = json.load(f)
-
-    test_generator = DataGenerator(config, dataset['test'], shuffle=False, use_data_augmentation=False)
-
-    y_size = config['image']['image_size']['y_size']
-    x_size = config['image']['image_size']['x_size']
-    num_channels = config['image']['image_size']['num_channels']
-    convert_to_grayscale = config['image']['convert_to_grayscale']
-
-    #read image
-    if num_channels == 1 or (num_channels == 3 and convert_to_grayscale):
-        image = read_image_BW('./', filename, y_size, x_size)
-        image = normalize_0_mean_1_variance_BW(image, y_size, x_size)
-        image = np.reshape(image, (1, y_size, x_size, 1))
-    else:
-        image = read_image_color('./', filename, y_size, x_size)
-        image = normalize_0_mean_1_variance_color(image, y_size, x_size)
-        image = np.reshape(image, (1, y_size, x_size, 3))
-
-    #print(image.shape)
-
-    graph_file =  config['predict']['graph_file']
-    weights_file = config['predict']['weights_file']
-    batch_size = 1
-
-    predictor = PredictorSeq2Seq(config, graph_file, weights_file, test_generator.num_decoder_tokens, test_generator.max_seq_length, test_generator.token_indices, test_generator.reverse_token_indices,
-                                 batch_size = batch_size)
-
-    pred = predictor.predict(image)
-    print(pred)
-    print("Predicted label:", pred[0])
-
 if __name__ == '__main__':
-
-    # parser = argparse.ArgumentParser(description='Seq2seq')
-    # parser.add_argument('-c', '--conf', help='path to configuration file', required=True)
-
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--train', action='store_true', help='Train')
     group.add_argument('--predict_on_test', action='store_true', help='Predict on test set')
-    group.add_argument('--predict', action='store_true', help='Predict on single file')
 
     parser.add_argument('--filename', help='path to file')
 
     args = parser.parse_args()
 
-    #    print(args)
-
     if args.predict_on_test:
         print('Predicting on test set')
         predict_on_test(args)
-
-    elif args.predict:
-        if args.filename is None:
-            raise Exception('missing --filename FILENAME')
-        else:
-            print('predict')
-            predict(args)
 
     elif args.train:
         print('Starting training')
