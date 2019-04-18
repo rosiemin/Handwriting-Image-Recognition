@@ -91,7 +91,7 @@ def predict_on_test(args):
     print('CER: ', round(CER * 100, 2), '%')
     print('WER: ', round(WER * 100, 2), '%')
 
-    return CER, WER, labels_test, pred_test, images_test, datatset['test']
+    return CER, WER, labels_test, pred_test, images_test, dataset['test']
 
 if __name__ == '__main__':
     print('Predicting on test set')
