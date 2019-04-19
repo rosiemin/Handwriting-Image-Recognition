@@ -1,8 +1,0 @@
-**/.ipynb_checkpoints/*
-*/**/__pycache__/*
-datasets/words*
-tensorboard/*
-checkpoints/*
-!.gitkeep
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*

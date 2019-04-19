@@ -147,9 +147,21 @@ Examples of words with their true labels and actual labels:
 </p>
 
 # Final Thoughts:
-While this model is far from perfect, there is still a lot of progress between the capstone 2 project and
+While this model is far from perfect, there was a lot of progress between the capstone 2 project and this final capstone.
+
+This particular portion of was focused on generating 'captions' for images of handwritten words. I modified previous work done by [giovanniguidi](https://github.com/giovanniguidi/Seq-2-Seq-OCR) after cleaning the data. This data was trained on a CNN-LSTM based model, using Seq2Seq based logic to predict next characters.
+
+While I tried to account for many of the mislabeled words, there were too many to go through by hand, however, regardless, this model worked well for and still provided a low error rate of characters.
+
+One other topic that I didn't consider for this current project was working with data augmentation, dealing with slanted or cursive words. Many people in the literature found that these models had a hard time predicting cursive or slanted words, so next steps would be to add that step to my image processing pipeline so I can make sure I can get as "clean" of an image as possible. [link](https://github.com/githubharald/DeslantImg)
 
 ## Next Steps:
+
+- Improve metrics, reducing CER and/or WER for character based model
+- Scale model up, using words to line on portion of data
+- Run CNN-LSTM model on full dataset for words to line
+- Attempt a working demo of the CNN-LSTM words to line model
+- Examine other methods of handwriting recognition (CTC loss)
 
 ### References:
 

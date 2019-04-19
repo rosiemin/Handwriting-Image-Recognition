@@ -6,7 +6,7 @@ image:
         y_size: 128
         x_size: 384
         num_channels: 1
-    convert_to_grayscale: false
+    # convert_to_grayscale: false
 train:
     train_on_subset:
         enabled: false
@@ -32,15 +32,6 @@ network:
     latent_dim: 512
     max_seq_lenght: 55
     loss: "categorical_crossentropy"
-# data_aug:
-#     use_data_aug: false
-#     rotation_range: 5
-#     width_shift_range: 0.05
-#     height_shift_range: 0.05
-#     zoom_range: [0.95, 1.05]
-#     horizontal_flip: false
-#     vertical_flip: false
-#     shear_range: 2.
 callbacks:
     early_stopping:
         enabled: true
