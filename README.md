@@ -28,6 +28,8 @@ The IAM Handwriting database was first published in 1999 and was developed for h
   <img src="images/wordflow.png">
 </p>
 
+[Back to Top](#Table-of-Contents)
+
 **In order to access this data, you will need to create a user login name and download the words data and `words.txt` file from [here.](http://www.fki.inf.unibe.ch/databases/iam-handwriting-database) Put the entire words folder and the `words.txt` file into a folder labeled `data`**
 
 Your file structure should look similar to this:
@@ -59,6 +61,8 @@ Your file structure should look similar to this:
 
 The IAM handwriting dataset contains **1,539** forms written be **657** unique individuals. In total, there are **13,353** lines and **115,320** separated words.
 
+[Back to Top](#Table-of-Contents)
+
 # Data Cleaning:
 For the purposes of this capstone, the data were cleaned based on a few features.
 
@@ -79,6 +83,8 @@ After the data were clean, I ended up with:
 
 If you want to run using these same splits of files, make sure that in your `config.yaml` file, the 'labels_file' uses the `data/labels.json` path. If you want to create your own split, run the `labels_ttsplit.py` file (making sure the `words.txt` file is in the data folder
 
+[Back to Top](#Table-of-Contents)
+
 # CNN-LSTM Modeling:
 This model uses a convolutional neural network that feeds into a sequential LSTM network using the Seq-2-Seq framework found [here](https://google.github.io/seq2seq/).
 
@@ -86,27 +92,42 @@ This model uses a convolutional neural network that feeds into a sequential LSTM
   <img src="images/cnn-lstm.gif">
 </p>
 
+[Back to Top](#Table-of-Contents)
+
 ## Training:
 In order to predict using this framework, you will need to train the model first. There are one of two ways you can do this.
 
 1. iPython or Python method:
   * From the command line:
-          python src/train.py
+
+          `python src/train.py`
+
   * From ipython
-          run src/train.py
+
+          `run src/train.py`
+
 2. Command Line Interface:
-          python cnn_lstm.py -c src/config.yml --train
+
+          `python cnn_lstm.py -c src/config.yml --train`
 
 ## Predicting:
 Once the model has been trained and weights have been saved in the `models` folder, you can predict on your testing dataset.
 
 1. iPython or Python method:
   * From the command line:
-          python src/predict.py
+
+          `python src/predict.py`
+
   * From ipython
-          run src/predict.py
+
+          `run src/predict.py`
+
 2. Command Line Interface:
-          python cnn_lstm.py -c src/config.yml --predict
+
+          `python cnn_lstm.py -c src/config.yml --predict`
+
+[Back to Top](#Table-of-Contents)
+
 
 # Results:
 My results based on the model I trained were:
@@ -120,13 +141,20 @@ Examples of output from prediction:
   <img src="images/predictionex.png" height = 500px>
 </p>
 
+[Back to Top](#Table-of-Contents)
+
 <p align="center">
   <img src="images/wordsbyerror_202.png" height = 500px>
 </p>
 
+[Back to Top](#Table-of-Contents)
+
 <p align="center">
   <img src="images/error_rates_err.png">
 </p>
+
+[Back to Top](#Table-of-Contents)
+
 
 Examples of words with their true labels and actual labels:
 <p align="center">
@@ -146,6 +174,9 @@ Examples of words with their true labels and actual labels:
   <img src="images/word14.png" width=250px>
 </p>
 
+[Back to Top](#Table-of-Contents)
+
+
 # Final Thoughts:
 While this model is far from perfect, there was a lot of progress between the capstone 2 project and this final capstone.
 
@@ -162,6 +193,9 @@ One other topic that I didn't consider for this current project was working with
 - Run CNN-LSTM model on full dataset for words to line
 - Attempt a working demo of the CNN-LSTM words to line model
 - Examine other methods of handwriting recognition (CTC loss)
+
+[Back to Top](#Table-of-Contents)
+
 
 ### References:
 
