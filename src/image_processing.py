@@ -6,12 +6,10 @@ import pandas as pd
 import numpy as np
 import random
 from tqdm import tqdm
-import pdb
 import imageio
 
 class IAM_imageprocess():
     word = 'word'
-    line = 'line'
     color = 255
 
     def __init__(self, df, cutoff_height = 200, cutoff_width = 400, desired_height = 32, desired_width = 64, size = 2000, rootDir = 'data/words'):
@@ -24,15 +22,9 @@ class IAM_imageprocess():
         self.size = size
 
     def IAM_images(self):
-        # pdb.set_trace()
-        if IAM_imageprocess.word in self.rootDir:
-            if not os.path.isfile('data/words_image_size_df.csv'):
-                self.max_h_w_image()
-            self.subset_by_size('data/words_image_size_df.csv')
-        elif IAM_imageprocess.line in self.rootDir:
-            if not os.path.isfile('data/lines_image_size_df.csv'):
-                self.max_h_w_image()
-            self.subset_by_size('data/lines_image_size_df.csv')
+        if not os.path.isfile('data/words_image_size_df.csv'):
+            self.max_h_w_image()
+        self.subset_by_size('data/words_image_size_df.csv')
         self.resize_images()
         X_train, X_test, y_train, y_test = self.train_test_split()
 
@@ -63,10 +55,8 @@ class IAM_imageprocess():
         self.df['height'] = image_size_df['heights']
         self.df['width'] = image_size_df['widths']
 
-        if IAM_imageprocess.word in self.rootDir:
-            image_size_df.to_csv('data/words_image_size_df.csv')
-        elif IAM_imageprocess.line in self.rootDir:
-            image_size_df.to_csv('data/lines_image_size_df.csv')
+        image_size_df.to_csv('data/words_image_size_df.csv')
+
 
 
     def subset_by_size(self, size_df_path = None):
@@ -103,28 +93,27 @@ class IAM_imageprocess():
 
             else:
                 old_im = ImageOps.grayscale(Image.open(image))
-                # img_width = old_im.size[0]
-                # img_height = old_im.size[1]
-                # if img_width < self.cutoff_width and img_width < self.desired_width:
-                #     delta_w = self.desired_width - img_width
-                #     pad_w = (delta_w//2, 0, delta_w-(delta_w//2), 0)
-                #     old_im = ImageOps.expand(old_im, pad_w, 255)
-                # if img_height < self.cutoff_height and img_height < self.desired_height:
-                #     delta_h = self.desired_height - img_height
-                #     pad_h = (0, delta_h//2, 0, delta_h-(delta_h//2))
-                #     old_im = ImageOps.expand(old_im, pad_h, 255)
-                # # pad all images whether we added padding or not
+                img_width = old_im.size[0]
+                img_height = old_im.size[1]
+                if img_width < self.cutoff_width and img_width < self.desired_width:
+                    delta_w = self.desired_width - img_width
+                    pad_w = (delta_w//2, 0, delta_w-(delta_w//2), 0)
+                    old_im = ImageOps.expand(old_im, pad_w, 255)
+                if img_height < self.cutoff_height and img_height < self.desired_height:
+                    delta_h = self.desired_height - img_height
+                    pad_h = (0, delta_h//2, 0, delta_h-(delta_h//2))
+                    old_im = ImageOps.expand(old_im, pad_h, 255)
+                # pad all images whether we added padding or not
                 extra_pad = (10, 10, 10, 10)
                 new_im = ImageOps.expand(old_im, extra_pad, 255)
                 #resize images to be our desired size
-                # new_im = old_im.resize((self.desired_width, self.desired_height))
+                new_im = old_im.resize((self.desired_width, self.desired_height))
                 self.vect_img_lst.append(np.array(new_im))
 
                 new_im.save(newfilepath)
 
     def train_test_split(self):
         #self.size = len(self.df)
-
         print(f'Randomly selecting {self.size} samples...')
         print("Performing train test split")
         subsample = random.sample(range(len(self.vect_img_lst)), self.size)
