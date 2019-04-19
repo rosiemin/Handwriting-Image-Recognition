@@ -15,24 +15,6 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceL
 
 
 class Trainer(object):
-    """
-    Base class for the keras "model"
-    Attributes
-    ----------
-    epochs : int
-        number of epochs to train
-    callbacks_list : list
-        list with callbacks during training
-    Methods
-    -------
-    callbacks()
-        create the callback list
-    train()
-        train a model
-    save_model()
-        save model weights
-    """
-
 
     def __init__(self, config, model, train_generator, val_generator):
         self.config = config
@@ -70,13 +52,6 @@ class Trainer(object):
             filepath = self.config['callbacks']['model_last_checkpoint']['out_file']
             callbacks.append(ModelCheckpoint(filepath, verbose=1, save_best_only=False,
                             save_weights_only=True))
-
-        # #reduce lr on plateau
-        # if self.config['callbacks']['reduce_lr_on_plateau']['enabled'] == True:
-        #     monitor = self.config['callbacks']['reduce_lr_on_plateau']['monitor']
-        #     factor = self.config['callbacks']['reduce_lr_on_plateau']['factor']
-        #     patience = self.config['callbacks']['reduce_lr_on_plateau']['patience']
-        #     callbacks.append(ReduceLROnPlateau(monitor = monitor, factor = factor, patience = patience))
 
         return callbacks
 
