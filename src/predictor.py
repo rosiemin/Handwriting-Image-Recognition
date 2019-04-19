@@ -19,9 +19,7 @@ class Predictor(object):
 
     def __init__(self, config, graph_path, weights_path, num_decoder_tokens, max_seq_length,
                 token_indices, reverse_token_indices, batch_size = 64):
-        """
-        Constructor
-        """
+
         self.config = config
         self.num_decoder_tokens = num_decoder_tokens
         self.max_seq_length = max_seq_length
@@ -43,14 +41,6 @@ class Predictor(object):
         return model
 
     def build_graphs(self):
-        """Create the computational graphs (encoder, decoder)
-        Returns
-        -------
-        encoder_graph: keras.models
-            keras model of the encoder
-        decoder_graph: keras.models
-            keras model of the encoder
-        """
 
         latent_dim = self.config['network']['latent_dim']
 
