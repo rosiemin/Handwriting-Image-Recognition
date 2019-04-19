@@ -23,11 +23,8 @@ def read_image(images_folder, filename, y_size, x_size):
 
     return img
 
-
 def norm_img(img, y_size, x_size):
 
-
-    # normalize
     (m, s) = cv2.meanStdDev(img)
     m = m[0][0]
     s = s[0][0]

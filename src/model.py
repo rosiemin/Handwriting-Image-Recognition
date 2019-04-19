@@ -15,33 +15,6 @@ from keras.optimizers import Adam
 
 
 class Models():
-    """
-    Class for the keras model
-
-    Attributes
-    ----------
-    y_size : int
-        image height
-    x_size : int
-        image width
-    num_channels : int
-        number of channels
-    latent_dim : int
-        dimension of the encoder/decoder state
-    max_seq_length : int
-        maximum length of the sequence
-    model : keras.models
-        keras model
-
-    Methods
-    -------
-    build_model()
-        create the keras model
-    build_graph()
-        create the computational graph
-    save_graph()
-        save the computational graph
-    """
 
     def __init__(self, config, max_seq_length, num_decoder_tokens):
         """

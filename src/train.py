@@ -11,9 +11,6 @@ from src.preprocess import read_image, norm_img
 
 
 def train(args):
-    """
-    Train a model on the train set defined in labels.json
-    """
 
     config_path = args
 

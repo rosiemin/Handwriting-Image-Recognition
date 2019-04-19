@@ -6,38 +6,10 @@ import json
 import keras
 import string
 
-# from src.data_aug import data_aug
 from src.preprocess import read_image, norm_img
 
 
 class DataGenerator(keras.utils.Sequence):
-    """
-    Class that implement data generation
-    Attributes
-    ----------
-    decoder_tokens : list
-        tokens that can be produced by the decoder
-    num_decoder_tokens : list
-        total number of tokens
-    max_seq_length : int
-        maximum length of the sequence
-    token_indices : dict
-        dict {token: index}
-    reverse_token_indices : dict
-        {index: token}
-    indices : np.arrray
-        indices of the array
-    Methods
-    -------
-    __len__()
-        returns the length of the dataset
-    __getitem__(index)
-        returns a batch of data
-    on_epoch_end()
-        function called when finishing an epoch
-    data_generation(dataset_temp)
-        read and normalize images of the batch
-    """
 
     def __init__(self, config, dataset, shuffle=True, use_data_augmentation=False):
         """
@@ -53,7 +25,6 @@ class DataGenerator(keras.utils.Sequence):
         self.x_size = self.config['image']['image_size']['x_size']
         self.num_channels = self.config['image']['image_size']['num_channels']
         self.shuffle = shuffle
-        # self.use_data_aug = use_data_augmentation
         self.decoder_tokens = sorted(string.printable)
         self.num_decoder_tokens = len(self.decoder_tokens)
         self.max_seq_length = self.config['network']['max_seq_lenght']
@@ -61,27 +32,10 @@ class DataGenerator(keras.utils.Sequence):
         self.indices = np.arange(self.dataset_len)
 
     def __len__(self):
-        """Gives the number of batches per epoch
-        Returns
-        -------
-        len: int
-            number of batches in an epoch
-        """
-
+        
         return int(np.floor(self.dataset_len / self.batch_size))
 
     def __getitem__(self, index):
-        """Returns a batch of data
-        Parameters
-        ------
-        index: int
-            index of the batch
-        Returns
-        -------
-        X, y1, y2: numpy array
-            image preprocessed, input of the decoder (in teacher forcing configuration) and
-            output of the decoder
-        """
 
         # Generate indexes of the batch
         indices = self.indices[index*self.batch_size:(index+1)*self.batch_size]
@@ -95,9 +49,6 @@ class DataGenerator(keras.utils.Sequence):
         return [X, y1], y2
 
     def on_epoch_end(self):
-        """
-        Updates indexes after each epoch
-        """
 
         if self.shuffle == True:
             np.random.shuffle(self.indices)
@@ -139,10 +90,7 @@ class DataGenerator(keras.utils.Sequence):
             num_channels = self.config['image']['image_size']['num_channels']
             convert_to_grayscale = self.config['image']['convert_to_grayscale']
 
-            #read image, apply data augmentation and normalize
             image = read_image(self.images_folder, elem['filename'], y_size, x_size)
-            # if self.use_data_aug:
-            #     image = data_aug_functions(image, self.config)
             image = norm_img(image, y_size, x_size)
 
             decoder_input_data, decoder_target_data = self.one_hot_labels(elem['label'], self.max_seq_length,

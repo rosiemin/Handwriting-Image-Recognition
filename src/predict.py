@@ -11,24 +11,6 @@ from src.preprocess import read_image, norm_img
 
 
 def score_prediction(y_true, y_pred):
-    """Function to score prediction on IAM, using Levenshtein distance
-       to calculate character error rate (CER)
-
-    Parameters
-    ------
-    y_true: list
-        list of ground truth labels
-    y_pred: list
-        list of predicted labels
-
-    Returns
-    -------
-    CER: float
-        character error rate
-    WER: float
-        word error rate
-    """
-
     words_identified = 0
     characters_identified = 0
     char_tot = 0
@@ -44,17 +26,12 @@ def score_prediction(y_true, y_pred):
 
         characters_identified += normalized_distance
 
-    # array_accuracy_characters = np.asarray(list_accuracy_characters)
     CER = float((characters_identified) / len(y_true))
     WER = (len(y_pred) - words_identified)/len(y_pred)
 
     return CER, WER
 
 def predict_on_test(args):
-    """
-    Predict on the test set defined in labels.json
-    """
-
     config_path = args
 
     with open(config_path) as f:
@@ -65,7 +42,6 @@ def predict_on_test(args):
 
     test_generator = DataGenerator(config, dataset['test'], shuffle=False)
 
-    #numpy array containing images
     images_test, labels_test = test_generator.get_full_dataset()
 
     graph_file =  config['predict']['graph_file']
@@ -88,4 +64,4 @@ def predict_on_test(args):
 
 if __name__ == '__main__':
     print('Predicting on test set')
-    CER, WER, labels_test, pred_test, images_test, dataset['test'] = predict_on_test('src/config.yml')
+    CER, WER, labels_test, pred_test, images_test, dat = predict_on_test('src/config.yml')
