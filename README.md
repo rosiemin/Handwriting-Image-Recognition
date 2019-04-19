@@ -100,15 +100,15 @@ In order to predict using this framework, you will need to train the model first
 1. iPython or Python method:
   * From the command line:
 
-          `python src/train.py`
+          python src/train.py
 
   * From ipython
 
-          `run src/train.py`
+          run src/train.py
 
 2. Command Line Interface:
 
-          `python cnn_lstm.py -c src/config.yml --train`
+          python cnn_lstm.py -c src/config.yml --train
 
 ## Predicting:
 Once the model has been trained and weights have been saved in the `models` folder, you can predict on your testing dataset.
@@ -116,15 +116,15 @@ Once the model has been trained and weights have been saved in the `models` fold
 1. iPython or Python method:
   * From the command line:
 
-          `python src/predict.py`
+          python src/predict.py
 
   * From ipython
 
-          `run src/predict.py`
+          run src/predict.py
 
 2. Command Line Interface:
 
-          `python cnn_lstm.py -c src/config.yml --predict`
+          python cnn_lstm.py -c src/config.yml --predict
 
 [Back to Top](#Table-of-Contents)
 
