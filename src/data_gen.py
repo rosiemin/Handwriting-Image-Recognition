@@ -62,7 +62,6 @@ class DataGenerator(keras.utils.Sequence):
             y_size = self.config['image']['image_size']['y_size']
             x_size = self.config['image']['image_size']['x_size']
             num_channels = self.config['image']['image_size']['num_channels']
-            convert_to_grayscale = self.config['image']['convert_to_grayscale']
 
             #read image
             image = read_image(self.images_folder, elem['filename'], y_size, x_size)
@@ -88,7 +87,7 @@ class DataGenerator(keras.utils.Sequence):
             y_size = self.config['image']['image_size']['y_size']
             x_size = self.config['image']['image_size']['x_size']
             num_channels = self.config['image']['image_size']['num_channels']
-            convert_to_grayscale = self.config['image']
+
 
             image = read_image(self.images_folder, elem['filename'], y_size, x_size)
             image = norm_img(image, y_size, x_size)
