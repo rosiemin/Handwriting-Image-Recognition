@@ -32,7 +32,7 @@ class DataGenerator(keras.utils.Sequence):
         self.indices = np.arange(self.dataset_len)
 
     def __len__(self):
-        
+
         return int(np.floor(self.dataset_len / self.batch_size))
 
     def __getitem__(self, index):
@@ -88,7 +88,7 @@ class DataGenerator(keras.utils.Sequence):
             y_size = self.config['image']['image_size']['y_size']
             x_size = self.config['image']['image_size']['x_size']
             num_channels = self.config['image']['image_size']['num_channels']
-            convert_to_grayscale = self.config['image']['convert_to_grayscale']
+            convert_to_grayscale = self.config['image']
 
             image = read_image(self.images_folder, elem['filename'], y_size, x_size)
             image = norm_img(image, y_size, x_size)

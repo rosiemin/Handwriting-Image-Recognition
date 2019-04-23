@@ -39,7 +39,6 @@ def score_prediction(y_true, y_pred):
 
     words_identified = 0
     characters_identified = 0
-    char_tot = 0
 
     for i in range(len(y_pred)):
         if y_true[i] == y_pred[i]:
@@ -58,9 +57,6 @@ def score_prediction(y_true, y_pred):
     return CER, WER
 
 def predict_on_test(args):
-    """
-    Predict on the test set defined in labels.json
-    """
 
     config_path = args.conf
 
@@ -78,7 +74,13 @@ def predict_on_test(args):
     weights_file = config['predict']['weights_file']
     batch_size = config['predict']['batch_size']
 
-    predictor = Predictor(config, graph_file, weights_file, test_generator.num_decoder_tokens, test_generator.max_seq_length, test_generator.token_indices, test_generator.reverse_token_indices, batch_size = batch_size)
+    predictor = Predictor(config, graph_file,
+                        weights_file,
+                        test_generator.num_decoder_tokens,
+                        test_generator.max_seq_length,
+                        test_generator.token_indices,
+                        test_generator.reverse_token_indices,
+                        batch_size = batch_size)
 
     pred_test = predictor.predict(images_test)
 
