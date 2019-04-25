@@ -89,7 +89,7 @@ If you want to run using these same splits of files, make sure that in your `con
 This model uses a convolutional neural network that feeds into a sequential LSTM network using the Seq-2-Seq framework found [here](https://google.github.io/seq2seq/).
 
 <p align="center">
-  <img src="images/cnn-lstm.gif">
+  <img src="images/gif-smallerword.gif">
 </p>
 
 [Back to Top](#Table-of-Contents)
