@@ -150,7 +150,7 @@ Examples of output from prediction:
 [Back to Top](#Table-of-Contents)
 
 <p align="center">
-  <img src="images/error_rates_err.png">
+  <img src="images/error_rates_err_trunc.png">
 </p>
 
 [Back to Top](#Table-of-Contents)
